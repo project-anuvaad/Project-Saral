@@ -11,6 +11,9 @@ import ScanDetailsComponent from "../modules/myScanScreens/ScanDetailsComponent"
 import SelectDetailsComponent from "../modules/myScanScreens/SelectDetailsComponent";
 import PatScanDetailsComponent from "../modules/myScanScreens/PatScanDetailsComponent";
 import SatScanDetailsComponent from "../modules/myScanScreens/SatScanDetailsComponent";
+import StudentsList from "../modules/StudentsList/StudentsList";
+import ScanHistory from "../modules/ScanHistory/ScanHistory";
+import ScanStatus from "../modules/ScanStatus/ScanStatus";
 
 
 const AuthStack = createStackNavigator({
@@ -41,6 +44,15 @@ const MainStack = createStackNavigator(
         },
         satScanDetails: {
             screen: SatScanDetailsComponent
+        },
+        StudentsList: {
+            screen: StudentsList
+        },
+        ScanHistory: {
+            screen: ScanHistory
+        },
+        ScanStatus: {
+            screen: ScanStatus
         }
     },
     {
