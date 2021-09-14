@@ -49,7 +49,8 @@ const clearState = {
     dataPayload: null,
     calledLogin: false,
     callApi: '',
-    dateVisible: false
+    dateVisible: false,
+    examDate:[]
 }
 
 class SelectDetailsComponent extends Component {
@@ -86,7 +87,8 @@ class SelectDetailsComponent extends Component {
             calledLogin: false,
             callApi: '',
             dateVisible: false,
-            scanType: SCAN_TYPES.PAT_TYPE
+            scanType: SCAN_TYPES.PAT_TYPE,
+            examDate:[]
         }
         this.onBack = this.onBack.bind(this)
     }
@@ -341,17 +343,19 @@ class SelectDetailsComponent extends Component {
                                 if (studentsExamDataSaved) {
                                     let subArr = []
                                     let testID = []
-                                    let examDate = []
+                                    let examDates = []
                                     _.filter(studentsAndExamData.data.exams, function (o) {
-                                        subArr.push(o.examName+' '+ o.examDate)
+                                        subArr.push(o.examName+' '+o.examDate)
                                         testID.push(o.examId)
-                                        examDate.push(o.examDate)
+                                        examDates.push(o.examDate)
                                     })
                                     this.setState({
                                         errSection: '',
                                         sectionValid: true,
                                         subArr: subArr,
-                                        examTestID: testID
+                                        examTestID: testID,
+                                        examDate: examDates
+
                                     })
                                 }
                             }
@@ -438,7 +442,7 @@ class SelectDetailsComponent extends Component {
     }
 
     onSubmitClick = () => {
-        const { selectedClass, selectedClassId, selectedDate, selectedSection, selectedSubject, examTestID, subIndex } = this.state
+        const { selectedClass, selectedClassId, selectedDate, selectedSection, selectedSubject, examTestID, subIndex,examDate } = this.state
         this.setState({
             errClass: '',
             errSub: '',
@@ -450,10 +454,10 @@ class SelectDetailsComponent extends Component {
                 let obj = {
                     className: selectedClass,
                     class: selectedClassId,
-                    examDate: selectedDate,
+                    examDate: examDate[subIndex],
                     section: selectedSection,
                     subject: selectedSubject,
-                    examTestID: examTestID[subIndex]
+                    examTestID: examTestID[subIndex],
                 }
                 this.props.FilteredDataAction(obj)
                 this.props.navigation.navigate('StudentsList')

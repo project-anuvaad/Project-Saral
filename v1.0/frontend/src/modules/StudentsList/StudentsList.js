@@ -24,6 +24,7 @@ import AppTheme from '../../utils/AppTheme';
 //npm
 import AsyncStorage from '@react-native-community/async-storage';
 import { apkVersion } from '../../configs/config';
+import { ROIAction } from './ROIAction';
 
 const StudentsList = ({
     filteredData,
@@ -37,6 +38,7 @@ const StudentsList = ({
 
     useEffect(() => {
         studentData()
+        getRoi()
     }, []);
 
     //function
@@ -81,6 +83,18 @@ const StudentsList = ({
                 }
             }
         ])
+    }
+
+    const getRoi = () => {
+
+        let payload =
+        {
+            "examId": filteredData.response.examTestID
+            // "examId": "string"
+        }
+
+        let apiObj = new ROIAction(payload);
+        APITransport(apiObj)
     }
 
     return (
