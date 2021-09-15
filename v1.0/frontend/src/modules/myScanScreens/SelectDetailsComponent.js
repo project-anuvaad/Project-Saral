@@ -20,6 +20,7 @@ import { FilteredDataAction } from '../../flux/actions/apis/filteredDataActions'
 import APITransport from '../../flux/actions/transport/apitransport';
 import { SCAN_TYPES } from '../../utils/CommonUtils';
 import { StackActions, NavigationActions } from 'react-navigation';
+import { ROIAction } from '../StudentsList/ROIAction';
 
 
 const clearState = {
@@ -50,7 +51,7 @@ const clearState = {
     calledLogin: false,
     callApi: '',
     dateVisible: false,
-    examDate:[]
+    examDate: []
 }
 
 class SelectDetailsComponent extends Component {
@@ -71,7 +72,7 @@ class SelectDetailsComponent extends Component {
             pickerDate: new Date(),
             selectedDate: '',
             subArr: [],
-            examTestID:[],
+            examTestID: [],
             subIndex: -1,
             selectedSubject: '',
             errClass: '',
@@ -88,7 +89,7 @@ class SelectDetailsComponent extends Component {
             callApi: '',
             dateVisible: false,
             scanType: SCAN_TYPES.PAT_TYPE,
-            examDate:[]
+            examDate: []
         }
         this.onBack = this.onBack.bind(this)
     }
@@ -345,7 +346,7 @@ class SelectDetailsComponent extends Component {
                                     let testID = []
                                     let examDates = []
                                     _.filter(studentsAndExamData.data.exams, function (o) {
-                                        subArr.push(o.examName+' '+o.examDate)
+                                        subArr.push(o.subject + ' ' + o.examDate)
                                         testID.push(o.examId)
                                         examDates.push(o.examDate)
                                     })
@@ -442,12 +443,14 @@ class SelectDetailsComponent extends Component {
     }
 
     onSubmitClick = () => {
-        const { selectedClass, selectedClassId, selectedDate, selectedSection, selectedSubject, examTestID, subIndex,examDate } = this.state
+        const { selectedClass, selectedClassId, selectedDate, selectedSection, selectedSubject, examTestID, subIndex, examDate } = this.state
+        const { loginData , apiStatus } = this.props
         this.setState({
             errClass: '',
             errSub: '',
             errSection: '',
-            errSub: ''
+            errSub: '',
+            isLoading:true
         }, () => {
             let valid = this.validateFields()
             if (valid) {
@@ -460,9 +463,29 @@ class SelectDetailsComponent extends Component {
                     examTestID: examTestID[subIndex],
                 }
                 this.props.FilteredDataAction(obj)
-                this.props.navigation.navigate('StudentsList')
+                let payload = {
+                    "examId": examTestID[subIndex]
+                }
+                this.callROIData(payload,loginData.data.token)
             }
         })
+    }
+
+    callROIData = ( dataPayload , token  ) => {
+        let apiObj = new ROIAction(dataPayload,token);            
+        this.props.APITransport(apiObj)
+        // console.log("apistatus",apiStatus);
+        // if (apiStatus && apiStatus.message == Strings.please_try_again ) {
+        //     this.setState({
+        //        errClass: "ROI Doesn't Exist",
+        //        isLoading:false
+        //     })
+        // }else{
+            this.setState({
+               isLoading:false
+            })
+        // }
+        this.props.navigation.navigate('StudentsList')
     }
 
     setDate = date => {
@@ -497,7 +520,7 @@ class SelectDetailsComponent extends Component {
     }
 
     render() {
-        const { isLoading, defaultSelected, classList, classListIndex, selectedClass, sectionList, sectionListIndex, selectedSection, pickerDate, selectedDate, subArr, selectedSubject, subIndex, errClass, errSub, errDate, errSection, sectionValid, dateVisible,examTestID } = this.state
+        const { isLoading, defaultSelected, classList, classListIndex, selectedClass, sectionList, sectionListIndex, selectedSection, pickerDate, selectedDate, subArr, selectedSubject, subIndex, errClass, errSub, errDate, errSection, sectionValid, dateVisible, examTestID } = this.state
         const { loginData, scanTypeData } = this.props
         return (
 
@@ -509,7 +532,7 @@ class SelectDetailsComponent extends Component {
                     onLogoutClick={this.onLogoutClick}
                 />
                 {(loginData && loginData.data) &&
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View>
                         <Text
                             style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}
                         >
@@ -576,9 +599,9 @@ class SelectDetailsComponent extends Component {
                                     />
                                 </View>}
                             {
-                            // scanTypeData.scanType == SCAN_TYPES.PAT_TYPE &&
-                             sectionListIndex != -1 && sectionValid &&
-                                <View style={[styles.fieldContainerStyle, { paddingBottom: subIndex != -1 ? 0 : '10%' }]}>
+                                // scanTypeData.scanType == SCAN_TYPES.PAT_TYPE &&
+                                sectionListIndex != -1 && sectionValid &&
+                                <View style={[styles.fieldContainerStyle, { paddingBottom: subIndex != -1 ? '10%' : '10%' }]}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={[[styles.labelTextStyle, { width: '50%' }]]}>{Strings.subject}</Text>
                                         {errSub != '' && <Text style={[styles.labelTextStyle, { color: AppTheme.ERROR_RED, fontSize: AppTheme.FONT_SIZE_TINY + 1, width: '50%', textAlign: 'right', fontWeight: 'normal' }]}>{errSub}</Text>}
@@ -592,8 +615,8 @@ class SelectDetailsComponent extends Component {
                                         icon={require('../../assets/images/arrow_down.png')}
                                     />
                                 </View>
-                                }
-                            {
+                            }
+                            {/* {
                             (subIndex != -1 &&  sectionValid)
                              &&
                                     <TextField
@@ -605,7 +628,7 @@ class SelectDetailsComponent extends Component {
                                         editable={false}
                                         placeholder={Strings.please_select_date}
                                     />
-                                }
+                                } */}
                             <ButtonComponent
                                 customBtnStyle={styles.nxtBtnStyle}
                                 btnText={Strings.submit_text}
@@ -669,7 +692,8 @@ const mapStateToProps = (state) => {
         ocrLocalResponse: state.ocrLocalResponse,
         loginData: state.loginData,
         studentsAndExamData: state.studentsAndExamData,
-        scanTypeData: state.scanTypeData.response
+        scanTypeData: state.scanTypeData.response,
+        apiStatus: state.apiStatus,
     }
 }
 

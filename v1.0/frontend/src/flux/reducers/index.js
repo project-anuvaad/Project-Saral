@@ -5,6 +5,7 @@ import getStudentsAndExamDataReducer from './getStudentsAndExamDataReducer';
 import filteredDataReducer from './filteredDataReducer';
 import saveScanReducer from './saveScanReducer';
 import scanTypeReducer from './scanTypeReducer';
+import roiDataReducer from './roiDataReducer';
 
 export default {
     apiStatus: apiStatus,
@@ -13,5 +14,6 @@ export default {
     studentsAndExamData: getStudentsAndExamDataReducer,
     filteredData: filteredDataReducer,
     savedScanData: saveScanReducer,
-    scanTypeData: scanTypeReducer
+    scanTypeData: scanTypeReducer,
+    roiData: roiDataReducer
 }

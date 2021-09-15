@@ -159,6 +159,7 @@ const mapStateToProps = (state) => {
     return {
         filteredData: state.filteredData,
         loginData: state.loginData,
+        
     }
 }
 

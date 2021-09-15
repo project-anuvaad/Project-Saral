@@ -5,9 +5,10 @@
  import C from '../../flux/actions/constants'
  
  export class ROIAction extends API {
-    constructor(payload, timeout = 30000) {
-        super('POST', timeout, false);
+    constructor(payload,token, timeout = 30000) {
+        super('GET', timeout, false);
         this.payload = payload;
+        this.token = token;
         this.type = C.ROI_DATA;
     }
     toString() {
@@ -17,22 +18,27 @@
     processResponse(res) {
         super.processResponse(res)
         if (res) {            
-            this.response=res;
+            this.roiData=res;
         }
     }
 
     apiEndPoint() {
-        return `${super.apiEndPoint()}/roi`;
+        return `${super.apiEndPoint()}/roi/${this.payload.examId}`;
     }
 
     getHeaders() {
         return {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.token}`
         }
     }
 
+    getBody() {        
+        return 
+    }
+
     getPayload() {
-        return this.response
+        return this.roiData
     }
  
  }
