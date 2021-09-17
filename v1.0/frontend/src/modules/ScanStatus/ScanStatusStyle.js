@@ -33,5 +33,6 @@ export const styles = StyleSheet.create({
     },
     content: {
         paddingBottom: 20,
+        flexGrow:1
     }
 });

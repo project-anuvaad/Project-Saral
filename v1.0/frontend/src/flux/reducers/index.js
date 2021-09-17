@@ -6,6 +6,7 @@ import filteredDataReducer from './filteredDataReducer';
 import saveScanReducer from './saveScanReducer';
 import scanTypeReducer from './scanTypeReducer';
 import roiDataReducer from './roiDataReducer';
+import scanedDataReducer from './scanedDataReducer'
 
 export default {
     apiStatus: apiStatus,
@@ -15,5 +16,6 @@ export default {
     filteredData: filteredDataReducer,
     savedScanData: saveScanReducer,
     scanTypeData: scanTypeReducer,
-    roiData: roiDataReducer
+    roiData: roiDataReducer,
+    scanedData: scanedDataReducer
 }

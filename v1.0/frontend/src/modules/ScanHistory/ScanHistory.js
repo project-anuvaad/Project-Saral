@@ -19,16 +19,16 @@ const ScanHistory = ({
 }) => {
     return (
         <View style={styles.container}>
-            <HeaderComponent
+            {/* <HeaderComponent
                 title={Strings.up_saralData}
                 customLogoutTextStyle={{ color: AppTheme.GREY }}
                 versionText={apkVersion}
-            />
+            /> */}
 
             {
                 (loginData && loginData.data)
                 &&
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{marginTop:20}}>
                     <Text
                         style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}>
                         {Strings.school_name + ' Name : '}

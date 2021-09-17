@@ -107,9 +107,9 @@ const StudentsList = ({
                 onLogoutClick={onLogoutClick}
             /> */}
             {(loginData && loginData.data) &&
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View>
                     <Text
-                        style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}
+                        style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingTop: '4%' }}
                     >
                         {Strings.school_name + ' : '}
                         <Text style={{ fontWeight: 'normal' }}>
@@ -117,7 +117,7 @@ const StudentsList = ({
                         </Text>
                     </Text>
                     <Text
-                        style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}
+                        style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '1%' }}
                     >
                         {Strings.schoolId_text + ' : '}
                         <Text style={{ fontWeight: 'normal' }}>
@@ -159,6 +159,7 @@ const mapStateToProps = (state) => {
     return {
         filteredData: state.filteredData,
         loginData: state.loginData,
+        roiData: state.roiData
         
     }
 }

@@ -141,22 +141,23 @@ class MyScanComponent extends Component {
                     activityOpen: true
                 })
                 let uniqStudentsList = ['1234567', '2345678']
-                const scannerType = scanTypeData.scanType ? scanTypeData.scanType : SCAN_TYPES.PAT_TYPE
+                // const scannerType = scanTypeData.scanType ? scanTypeData.scanType : SCAN_TYPES.PAT_TYPE
+                const scannerType = SCAN_TYPES.PAT_TYPE
                 const scannerCode = this.getScannerType(scannerType)
                 RNOpenCvCameraModel.openScanCamera(JSON.stringify(uniqStudentsList), scannerType, scannerCode)
                     .then(data => {
-                        console.log("imgArrSuccess", JSON.parse(data));
+                        // console.log("imgArrSuccess", JSON.parse(data));
                         let scannerResponse = JSON.parse(data)
                         scannerResponse.scannerCode = scannerCode
                         scannerResponse.scannerType = scannerType
                         this.props.OcrLocalResponseAction(scannerResponse)
                         this.setState({ isLoading: false })
 
-                        if (scannerType == SCAN_TYPES.PAT_TYPE) {
+                        // if (scannerType == SCAN_TYPES.PAT_TYPE) {
                             this.props.navigation.navigate('patScanDetails', { oldBrightness: this.state.oldBrightness })
-                        } else if (scannerType == SCAN_TYPES.SAT_TYPE) {
-                            this.props.navigation.navigate('satScanDetails', { oldBrightness: this.state.oldBrightness })
-                        }
+                        // } else if (scannerType == SCAN_TYPES.SAT_TYPE) {
+                        //     this.props.navigation.navigate('satScanDetails', { oldBrightness: this.state.oldBrightness })
+                        // }
 
                     })
                     .catch((code, errorMessage) => {
@@ -181,7 +182,7 @@ class MyScanComponent extends Component {
         if (scanType == SCAN_TYPES.PAT_TYPE) {
             let subject = response.subject.toLowerCase()
             let classId = response.class
-            if (subject == 'math' && (classId == 3 || classId == 4 || classId == 5)) { //subject math - class -3,4&5.  - type -1
+            if (subject == 'math' && (classId == 3 || classId == 4 || classId == 5||classId==2)) { //subject math - class -3,4&5.  - type -1
                 return 1
             } else if (subject == 'hindi' && (classId == 2 || classId == 3)) { //subject hindi - class -2&3 - type - 2
                 return 2
@@ -200,18 +201,17 @@ class MyScanComponent extends Component {
 
     render() {
         const { isLoading } = this.state;
-        const { loginData,filteredData } = this.props
-        console.log("filteredData",filteredData);
+        const { loginData } = this.props
         return (
 
             <View style={{ flex: 1, backgroundColor: AppTheme.WHITE_OPACITY }}>
-                <HeaderComponent
+                {/* <HeaderComponent
                     title={Strings.up_saralData}
-                />
+                /> */}
                 {
                     (loginData && loginData.data)
                     &&
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ marginVertical:'2%' }}>
                         <Text
                             style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}
                         >

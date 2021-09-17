@@ -129,11 +129,7 @@ class SelectDetailsComponent extends Component {
     }
 
     onBack = () => {
-        const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'dashboard' })],
-        });
-        this.props.navigation.dispatch(resetAction);
+        BackHandler.exitApp()
         return true
     }
 
@@ -346,7 +342,7 @@ class SelectDetailsComponent extends Component {
                                     let testID = []
                                     let examDates = []
                                     _.filter(studentsAndExamData.data.exams, function (o) {
-                                        subArr.push(o.subject + ' ' + o.examDate)
+                                        subArr.push(o.subject)
                                         testID.push(o.examId)
                                         examDates.push(o.examDate)
                                     })
@@ -396,7 +392,8 @@ class SelectDetailsComponent extends Component {
                 errClass: Strings.please_select_class,
                 errSection: '',
                 errSub: '',
-                errDate: ''
+                errDate: '',
+                isLoading: false
             })
             return false
         }
@@ -467,6 +464,10 @@ class SelectDetailsComponent extends Component {
                     "examId": examTestID[subIndex]
                 }
                 this.callROIData(payload,loginData.data.token)
+            }else{
+                this.setState({
+                    isLoading: false
+                })
             }
         })
     }
@@ -474,17 +475,9 @@ class SelectDetailsComponent extends Component {
     callROIData = ( dataPayload , token  ) => {
         let apiObj = new ROIAction(dataPayload,token);            
         this.props.APITransport(apiObj)
-        // console.log("apistatus",apiStatus);
-        // if (apiStatus && apiStatus.message == Strings.please_try_again ) {
-        //     this.setState({
-        //        errClass: "ROI Doesn't Exist",
-        //        isLoading:false
-        //     })
-        // }else{
             this.setState({
                isLoading:false
             })
-        // }
         this.props.navigation.navigate('StudentsList')
     }
 
@@ -525,14 +518,14 @@ class SelectDetailsComponent extends Component {
         return (
 
             <View style={{ flex: 1, backgroundColor: AppTheme.WHITE_OPACITY }}>
-                <HeaderComponent
+                {/* <HeaderComponent
                     title={Strings.up_saralData}
                     logoutHeaderText={Strings.logout_text}
                     customLogoutTextStyle={{ color: AppTheme.GREY }}
                     onLogoutClick={this.onLogoutClick}
-                />
+                /> */}
                 {(loginData && loginData.data) &&
-                    <View>
+                    <View style={{marginTop:20}}>
                         <Text
                             style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}
                         >

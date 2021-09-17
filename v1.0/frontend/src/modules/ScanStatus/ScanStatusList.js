@@ -4,17 +4,16 @@ import AppTheme from '../../utils/AppTheme';
 
 const ScanStatusList = ({
     id,
-    name,
-    isSaved
+    subject
 }) => {
     return (
-        <View style={[styles.container, { backgroundColor: isSaved ? AppTheme.GREEN : AppTheme.BLUE }]}>
+        <View style={[styles.container, { backgroundColor:  AppTheme.GREEN }]}>
             <View style={styles.childCon}>
-                <Text style={styles.align}>{name}</Text>
+                <Text style={styles.align}>{subject}</Text>
                 <View style={styles.line} />
                 <Text style={styles.align}>{id}</Text>
                 <View style={styles.line} />
-                <Text style={styles.align}>{isSaved ? `Saved` : `Not Saved`}</Text>
+                <Text style={styles.align}>{`Saved` }</Text>
             </View>
         </View>
     );

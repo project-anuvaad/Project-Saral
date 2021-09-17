@@ -5,7 +5,6 @@ import {
 
 import { createStackNavigator } from 'react-navigation-stack'
 import LoginComponent from "../modules/loginScreens/LoginComponent";
-import DashboardComponent from '../modules/myScanScreens/DashboardComponent';
 import MyScanComponent from '../modules/myScanScreens/MyScanComponent';
 import ScanDetailsComponent from "../modules/myScanScreens/ScanDetailsComponent";
 import SelectDetailsComponent from "../modules/myScanScreens/SelectDetailsComponent";
@@ -27,9 +26,9 @@ const AuthStack = createStackNavigator({
 
 const MainStack = createStackNavigator(
     { 
-        dashboard: {
-            screen: DashboardComponent
-        },
+        // dashboard: {
+        //     screen: DashboardComponent
+        // },
         selectDetails: {
             screen: SelectDetailsComponent
         },
@@ -56,7 +55,7 @@ const MainStack = createStackNavigator(
         }
     },
     {
-        initialRouteName: 'dashboard',
+        initialRouteName: 'selectDetails',
         headerMode: 'none'
     }
 )
