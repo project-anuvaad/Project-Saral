@@ -16,33 +16,17 @@ import ScanStatusList from './ScanStatusList';
 //styles
 import { styles } from './ScanStatusStyle';
 
-//dummyData
-import { dummyData } from './dummyData';
+//Redux
 import { bindActionCreators } from 'redux';
 
 //api
 import APITransport from '../../flux/actions/transport/apitransport'
-import axios from 'axios';
-import { scanStatusDataAction } from './scanStatusDataAction';
-import { getLoginCred } from '../../utils/StorageUtils';
 
-import C from '../../flux/actions/constants'
-
-import { useState } from 'react/cjs/react.development';
-import { LoginAction } from '../../flux/actions/apis/LoginAction';
 
 const ScanStatus = ({
     loginData,
-    filteredData,
     scanedData
 }) => {
-
-    //Hooks
-    useEffect(() => {
-        callScanStatusData()
-    }, []);
-
-    const dispatch = useDispatch()
 
     //function
     const renderItem = ({ item, index }) => {
@@ -52,55 +36,6 @@ const ScanStatus = ({
                 subject={item.subject}
             />
         )
-    }
-
-    const callScanStatusData = async () => {
-        let loginCred = await getLoginCred()
-
-        let dataPayload = {
-            "classId": filteredData.class,
-            "subject": filteredData.subject,
-            "fromDate": filteredData.examDate,
-            "page": 1,
-            "downloadRes": true
-        }
-        let apiObj = new scanStatusDataAction(dataPayload);
-        FetchSavedScannedData(apiObj, loginCred.schoolId, loginCred.password)
-
-    }
-
-    const FetchSavedScannedData = (api, uname, pass) => {
-        if (api.method === 'POST') {
-            let apiResponse = null
-            const source = axios.CancelToken.source()
-            const id = setTimeout(() => {
-                if (apiResponse === null) {
-                    source.cancel('The request timed out.');
-                }
-            }, 60000);
-            axios.post(api.apiEndPoint(), api.getBody(), {
-                auth: {
-                    username: uname,
-                    password: pass
-                }
-            })
-                .then(function (res) {
-                    apiResponse = res
-                    clearTimeout(id)
-                    api.processResponse(res)
-                    dispatch(dispatchAPIAsync(api));
-                })
-                .catch(function (err) {
-                    clearTimeout(id)
-                });
-        }
-    }
-
-    function dispatchAPIAsync(api) {
-        return {
-            type: api.type,
-            payload: api.getPayload()
-        }
     }
 
     const renderEmptyData = ({ item }) => {

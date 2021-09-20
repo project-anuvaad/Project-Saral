@@ -5,7 +5,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 
 //constant
-import { apkVersion } from '../../configs/config';
 import AppTheme from '../../utils/AppTheme';
 import Strings from '../../utils/Strings';
 
@@ -17,6 +16,7 @@ const ScanHistory = ({
     loginData,
     navigation
 }) => {
+
     return (
         <View style={styles.container}>
             {/* <HeaderComponent
@@ -28,7 +28,7 @@ const ScanHistory = ({
             {
                 (loginData && loginData.data)
                 &&
-                <View style={{marginTop:20}}>
+                <View style={{ marginTop: 20 }}>
                     <Text
                         style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}>
                         {Strings.school_name + ' Name : '}
@@ -46,9 +46,9 @@ const ScanHistory = ({
                 </Text>
             </View>
 
-            <ScanHistoryCard 
-            showButtons={true}
-            navigation={navigation}
+            <ScanHistoryCard
+                showButtons={true}
+                navigation={navigation}
             />
 
         </View>
@@ -57,7 +57,7 @@ const ScanHistory = ({
 const mapStateToProps = (state) => {
     return {
         filteredData: state.filteredData,
-        loginData: state.loginData,
+        loginData: state.loginData
     }
 }
 

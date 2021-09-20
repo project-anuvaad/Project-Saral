@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, FlatList, Alert } from 'react-native';
 
 //redux
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import APITransport from '../../flux/actions/transport/apitransport'
 
 //storage
-import { getStudentsExamData } from '../../utils/StorageUtils';
+import { getLoginCred, getStudentsExamData } from '../../utils/StorageUtils';
 import ButtonComponent from '../common/components/ButtonComponent';
 import StudentsDataComponent from './StudentsDataComponent';
 
@@ -17,14 +17,18 @@ import { styles } from './StudentsDataStyle';
 //header
 import HeaderComponent from '../common/components/HeaderComponent';
 
+//action
+
 //constant
 import Strings from '../../utils/Strings';
 import AppTheme from '../../utils/AppTheme';
+import { apkVersion } from '../../configs/config';
+import { ROIAction } from './ROIAction';
 
 //npm
 import AsyncStorage from '@react-native-community/async-storage';
-import { apkVersion } from '../../configs/config';
-import { ROIAction } from './ROIAction';
+import axios from 'axios';
+import { scanStatusDataAction } from '../../modules/ScanStatus/scanStatusDataAction';
 
 const StudentsList = ({
     filteredData,
@@ -39,9 +43,61 @@ const StudentsList = ({
     useEffect(() => {
         studentData()
         getRoi()
+        callScanStatusData()
     }, []);
 
+    const dispatch = useDispatch();
+
     //function
+
+    const callScanStatusData = async () => {
+        let loginCred = await getLoginCred()
+
+        let dataPayload = {
+            "classId": filteredData.class,
+            "subject": filteredData.subject,
+            "fromDate": filteredData.examDate,
+            "page": 1,
+            "downloadRes": true
+        }
+        let apiObj = new scanStatusDataAction(dataPayload);
+        FetchSavedScannedData(apiObj, loginCred.schoolId, loginCred.password)
+    }
+
+    const FetchSavedScannedData = (api, uname, pass) => {
+        if (api.method === 'POST') {
+            let apiResponse = null
+            const source = axios.CancelToken.source()
+            const id = setTimeout(() => {
+                if (apiResponse === null) {
+                    source.cancel('The request timed out.');
+                }
+            }, 60000);
+            axios.post(api.apiEndPoint(), api.getBody(), {
+                auth: {
+                    username: uname,
+                    password: pass
+                }
+            })
+                .then(function (res) {
+                    apiResponse = res
+                    clearTimeout(id)
+                    api.processResponse(res)
+                    dispatch(dispatchAPIAsync(api));
+                })
+                .catch(function (err) {
+                    clearTimeout(id)
+                });
+        }
+    }
+
+    function dispatchAPIAsync(api) {
+        return {
+            type: api.type,
+            payload: api.getPayload()
+        }
+    }
+
     const studentData = async () => {
         let studentsExamData = await getStudentsExamData();
         const filterStudentsData = studentsExamData.filter((e) => {

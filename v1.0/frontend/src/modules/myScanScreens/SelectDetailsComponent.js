@@ -687,6 +687,7 @@ const mapStateToProps = (state) => {
         studentsAndExamData: state.studentsAndExamData,
         scanTypeData: state.scanTypeData.response,
         apiStatus: state.apiStatus,
+        roiData: state.roiData
     }
 }
 

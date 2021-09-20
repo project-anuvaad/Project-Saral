@@ -12,6 +12,7 @@ const ScanHistoryCard = ({
     showButtons = true,
     navigation,
     filteredData,
+    scanedData
 }) => {
 
 
@@ -23,7 +24,7 @@ const ScanHistoryCard = ({
         navigation.navigate('ScanStatus')
     }
 
-
+    
     return (
         <TouchableOpacity
             style={[styles.container]}
@@ -77,7 +78,7 @@ const ScanHistoryCard = ({
                             <Text>{Strings.save_status}</Text>
                         </View>
                         <View style={[styles.scanLabelStyle, styles.scanLabelValueStyle, { borderBottomWidth: 1 }]}>
-                            <Text>{0}</Text>
+                            <Text>{scanedData && scanedData.length}</Text>
                         </View>
                     </View>
                 </View>
@@ -145,6 +146,7 @@ const ScanHistoryCard = ({
 const mapStateToProps = (state) => {
     return {
         filteredData: state.filteredData,
+        scanedData: state.scanedData.response.data
     }
 }
 
