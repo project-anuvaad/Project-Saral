@@ -129,7 +129,9 @@ class SelectDetailsComponent extends Component {
     }
 
     onBack = () => {
-        BackHandler.exitApp()
+        const { navigation } = this.props;
+        // BackHandler.exitApp()
+        navigation.goBack();
         return true
     }
 
@@ -441,7 +443,7 @@ class SelectDetailsComponent extends Component {
 
     onSubmitClick = () => {
         const { selectedClass, selectedClassId, selectedDate, selectedSection, selectedSubject, examTestID, subIndex, examDate } = this.state
-        const { loginData , apiStatus } = this.props
+        const { loginData , apiStatus,scanTypeData } = this.props
         this.setState({
             errClass: '',
             errSub: '',
@@ -461,7 +463,8 @@ class SelectDetailsComponent extends Component {
                 }
                 this.props.FilteredDataAction(obj)
                 let payload = {
-                    "examId": examTestID[subIndex]
+                    "examId": examTestID[subIndex],
+                    "type": scanTypeData.scanType
                 }
                 this.callROIData(payload,loginData.data.token)
             }else{
@@ -473,11 +476,14 @@ class SelectDetailsComponent extends Component {
     }
 
     callROIData = ( dataPayload , token  ) => {
+        const { apiStatus } = this.props;
+        console.log("apiStatus",apiStatus);
         let apiObj = new ROIAction(dataPayload,token);            
         this.props.APITransport(apiObj)
             this.setState({
                isLoading:false
             })
+            console.log("ApiStatusAfterCalling",apiStatus);
         this.props.navigation.navigate('StudentsList')
     }
 

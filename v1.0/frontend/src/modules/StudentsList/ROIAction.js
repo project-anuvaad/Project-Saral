@@ -23,7 +23,7 @@
     }
 
     apiEndPoint() {
-        return `${super.apiEndPoint()}/roi/${this.payload.examId}`;
+        return `${super.apiEndPoint()}/roi/${this.payload.examId}/type/${this.payload.type}`;
     }
 
     getHeaders() {

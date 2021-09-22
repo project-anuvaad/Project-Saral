@@ -13,6 +13,7 @@ import SatScanDetailsComponent from "../modules/myScanScreens/SatScanDetailsComp
 import StudentsList from "../modules/StudentsList/StudentsList";
 import ScanHistory from "../modules/ScanHistory/ScanHistory";
 import ScanStatus from "../modules/ScanStatus/ScanStatus";
+import DashboardComponent from '../modules/myScanScreens/DashboardComponent'
 
 
 const AuthStack = createStackNavigator({
@@ -26,9 +27,9 @@ const AuthStack = createStackNavigator({
 
 const MainStack = createStackNavigator(
     { 
-        // dashboard: {
-        //     screen: DashboardComponent
-        // },
+        dashboard: {
+            screen: DashboardComponent
+        },
         selectDetails: {
             screen: SelectDetailsComponent
         },
@@ -55,7 +56,7 @@ const MainStack = createStackNavigator(
         }
     },
     {
-        initialRouteName: 'selectDetails',
+        initialRouteName: 'dashboard',
         headerMode: 'none'
     }
 )
