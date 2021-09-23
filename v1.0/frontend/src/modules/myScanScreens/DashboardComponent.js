@@ -71,7 +71,7 @@ class DashboardComponent extends Component {
                     onLogoutClick={this.onLogoutClick}
                 />
                  {(loginData && loginData.data) && 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View>
                         <Text 
                             style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold',  paddingHorizontal: '5%', paddingVertical: '2%' }}
                         >

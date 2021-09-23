@@ -12,6 +12,7 @@ import { OcrLocalResponseAction } from '../../flux/actions/apis/OcrLocalResponse
 import { apkVersion } from '../../configs/config';
 import HeaderComponent from '../common/components/HeaderComponent';
 import { SCAN_TYPES } from '../../utils/CommonUtils';
+import ScanHistoryCard from '../ScanHistory/ScanHistoryCard';
 
 class MyScanComponent extends Component {
     constructor(props) {
@@ -35,7 +36,7 @@ class MyScanComponent extends Component {
                 this.setState({
                     showFooter: false
                 }, () => this.onScanClick())
-                
+
             }
             else {
                 this.setState({
@@ -80,7 +81,7 @@ class MyScanComponent extends Component {
             }
         }
     }
-    
+
 
     onScanClick = async () => {
         SystemSetting.getBrightness().then((brightness) => {
@@ -91,7 +92,7 @@ class MyScanComponent extends Component {
             const grantedRead = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE)
             const grantedWrite = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE)
             const grantedCamera = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-            
+
             if (grantedRead && grantedWrite && grantedCamera) {
                 this.openCameraActivity()
             }
@@ -113,7 +114,7 @@ class MyScanComponent extends Component {
                         permRes['android.permission.CAMERA'] === PermissionsAndroid.RESULTS.GRANTED
                     ) {
                         this.openCameraActivity()
-                    } else if(permRes['android.permission.READ_EXTERNAL_STORAGE'] == 'never_ask_again' ||
+                    } else if (permRes['android.permission.READ_EXTERNAL_STORAGE'] == 'never_ask_again' ||
                         permRes['android.permission.WRITE_EXTERNAL_STORAGE'] == 'never_ask_again' ||
                         permRes['android.permission.CAMERA'] == 'never_ask_again') {
                         Alert.alert(Strings.message_text, Strings.give_permission_from_settings, [
@@ -130,7 +131,7 @@ class MyScanComponent extends Component {
             }
         }
     }
-    
+
     openCameraActivity = () => {
         const { scanTypeData } = this.props
         SystemSetting.setBrightnessForce(1).then(async (success) => {
@@ -139,23 +140,24 @@ class MyScanComponent extends Component {
                 this.setState({
                     activityOpen: true
                 })
-                let uniqStudentsList = ['1234567', '2345678' ]
-                const scannerType = scanTypeData.scanType ? scanTypeData.scanType : SCAN_TYPES.PAT_TYPE
+                let uniqStudentsList = ['1234567', '2345678']
+                // const scannerType = scanTypeData.scanType ? scanTypeData.scanType : SCAN_TYPES.PAT_TYPE
+                const scannerType = SCAN_TYPES.PAT_TYPE
                 const scannerCode = this.getScannerType(scannerType)
                 RNOpenCvCameraModel.openScanCamera(JSON.stringify(uniqStudentsList), scannerType, scannerCode)
                     .then(data => {
-                        console.log("imgArrSuccess", JSON.parse(data));
+                        // console.log("imgArrSuccess", JSON.parse(data));
                         let scannerResponse = JSON.parse(data)
                         scannerResponse.scannerCode = scannerCode
                         scannerResponse.scannerType = scannerType
                         this.props.OcrLocalResponseAction(scannerResponse)
                         this.setState({ isLoading: false })
 
-                        if(scannerType == SCAN_TYPES.PAT_TYPE) {
+                        // if (scannerType == SCAN_TYPES.PAT_TYPE) {
                             this.props.navigation.navigate('patScanDetails', { oldBrightness: this.state.oldBrightness })
-                        } else if(scannerType == SCAN_TYPES.SAT_TYPE) {
-                            this.props.navigation.navigate('satScanDetails', { oldBrightness: this.state.oldBrightness })
-                        }
+                        // } else if (scannerType == SCAN_TYPES.SAT_TYPE) {
+                        //     this.props.navigation.navigate('satScanDetails', { oldBrightness: this.state.oldBrightness })
+                        // }
 
                     })
                     .catch((code, errorMessage) => {
@@ -163,7 +165,7 @@ class MyScanComponent extends Component {
                         Alert.alert(Strings.message_text, Strings.table_image_is_not_proper)
                         console.log("dataFailure", code, "Message", errorMessage);
                     });
-                }
+            }
             else if (!success) {
                 Alert.alert(Strings.permission_deny, Strings.you_have_no_permission_to_change_settings, [
                     { 'text': Strings.ok_text, style: Strings.cancel_text },
@@ -177,21 +179,21 @@ class MyScanComponent extends Component {
         const { filteredData } = this.props
         let response = filteredData.response
         let classId = response.class
-        if(scanType == SCAN_TYPES.PAT_TYPE) {
+        if (scanType == SCAN_TYPES.PAT_TYPE) {
             let subject = response.subject.toLowerCase()
             let classId = response.class
-            if(subject == 'math' && (classId == 3 || classId == 4|| classId == 5)) { //subject math - class -3,4&5.  - type -1
+            if (subject == 'math' && (classId == 3 || classId == 4 || classId == 5||classId==2)) { //subject math - class -3,4&5.  - type -1
                 return 1
-            } else if(subject == 'hindi' && (classId == 2 || classId == 3)) { //subject hindi - class -2&3 - type - 2
+            } else if (subject == 'hindi' && (classId == 2 || classId == 3)) { //subject hindi - class -2&3 - type - 2
                 return 2
             }
-            else if(subject == 'hindi' && (classId == 4 || classId == 5)) { //subject hindi - class -4&5 - type - 2
+            else if (subject == 'hindi' && (classId == 4 || classId == 5)) { //subject hindi - class -4&5 - type - 2
                 return 3
             }
-        } else if(scanType == SCAN_TYPES.SAT_TYPE) {
-            if(classId == 3 || classId == 4 || classId == 5) {
+        } else if (scanType == SCAN_TYPES.SAT_TYPE) {
+            if (classId == 3 || classId == 4 || classId == 5) {
                 return 1
-            } else if(classId == 6 || classId == 7 || classId == 8) {
+            } else if (classId == 6 || classId == 7 || classId == 8) {
                 return 2
             }
         }
@@ -203,42 +205,56 @@ class MyScanComponent extends Component {
         return (
 
             <View style={{ flex: 1, backgroundColor: AppTheme.WHITE_OPACITY }}>
-                <HeaderComponent
+                {/* <HeaderComponent
                     title={Strings.up_saralData}
-                />
-                {(loginData && loginData.data) && 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text 
-                        style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold',  paddingHorizontal: '5%', paddingVertical: '2%' }}
-                    >
-                        {Strings.school_name+' : '}
-                        <Text style={{ fontWeight: 'normal'}}>
-                            {loginData.data.school.name}
+                /> */}
+                {
+                    (loginData && loginData.data)
+                    &&
+                    <View style={{ marginVertical:'2%' }}>
+                        <Text
+                            style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}
+                        >
+                            {Strings.school_name + ' : '}
+                            <Text style={{ fontWeight: 'normal' }}>
+                                {loginData.data.school.name}
+                            </Text>
                         </Text>
-                    </Text>
-                    <Text 
-                        style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}
-                    >
-                        {Strings.schoolId_text+' : '}
-                        <Text style={{ fontWeight: 'normal'}}>
-                            {loginData.data.school.schoolId}
+                        <Text
+                            style={{ fontSize: AppTheme.FONT_SIZE_REGULAR, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', paddingVertical: '2%' }}
+                        >
+                            {Strings.schoolId_text + ' : '}
+                            <Text style={{ fontWeight: 'normal' }}>
+                                {loginData.data.school.schoolId}
+                            </Text>
                         </Text>
+                    </View>
+                }
+
+                <Text
+                    style={{ fontSize: AppTheme.FONT_SIZE_REGULAR - 3, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', marginBottom: '4%' }}
+                >
+                    {Strings.version_text + ' : '}
+                    <Text style={{ fontWeight: 'normal' }}>
+                        {apkVersion}
                     </Text>
-                    </View>}
-                    <Text 
-                        style={{ fontSize: AppTheme.FONT_SIZE_REGULAR-3, color: AppTheme.BLACK, fontWeight: 'bold', paddingHorizontal: '5%', marginBottom: '4%' }}
-                    >
-                        {Strings.version_text+' : '}
-                        <Text style={{ fontWeight: 'normal'}}>
-                            {apkVersion}
-                        </Text>
-                    </Text>
+                </Text>
                 <ScrollView
-                    contentContainerStyle={{  paddingTop: '5%', paddingBottom: '35%' }}
+                    contentContainerStyle={{ paddingTop: '5%', paddingBottom: '35%' }}
                     showsVerticalScrollIndicator={false}
                     bounces={false}
                     keyboardShouldPersistTaps={'handled'}
                 >
+                    <View style={styles.onGoingContainer}>
+                        <Text style={styles.header1TextStyle}>
+                            {Strings.ongoing_scan}
+                        </Text>
+                    </View>
+                    
+                    <ScanHistoryCard
+                        showButtons={false}
+                    />
+
                 </ScrollView>
                 <View style={styles.bottomTabStyle}>
                 </View>
@@ -247,7 +263,7 @@ class MyScanComponent extends Component {
                     <TouchableOpacity style={[styles.subTabContainerStyle]}
                         onPress={this.onScanClick}
                     >
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[styles.scanTabContainerStyle,]}
                         >
                             <TouchableOpacity
@@ -265,11 +281,14 @@ class MyScanComponent extends Component {
                         </Text>
                     </TouchableOpacity>
                 </View>
-                {isLoading &&
+                {
+                    isLoading
+                    &&
                     <Spinner
                         animating={isLoading}
                         customContainer={{ opacity: 0.9, elevation: 15 }}
-                    />}
+                    />
+                }
             </View>
         );
     }
@@ -280,6 +299,23 @@ const styles = {
         flex: 1,
         marginHorizontal: '6%',
         alignItems: 'center'
+    },
+    onGoingContainer: {
+        marginHorizontal: '4%',
+        alignItems: 'center',
+        paddingVertical: '4%'
+    },
+    header1TextStyle: {
+        backgroundColor: AppTheme.LIGHT_BLUE,
+        lineHeight: 40,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: AppTheme.LIGHT_BLUE,
+        width: '100%',
+        textAlign: 'center',
+        fontSize: AppTheme.FONT_SIZE_SMALL,
+        color: AppTheme.BLACK,
+        letterSpacing: 1
     },
     bottomTabStyle: {
         position: 'absolute',

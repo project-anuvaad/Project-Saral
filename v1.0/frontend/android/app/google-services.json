@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "441486044040",
+    "project_id": "saral-up",
+    "storage_bucket": "saral-up.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441486044040:android:64998c870b47604ade683d",
+        "android_client_info": {
+          "package_name": "com.up_saraldata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441486044040-71629g13qh99q5f3umsaau4lfi1aqs4b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9hlvj8u0lXHPZQsx-PliFHZSC-iN8ftw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441486044040-71629g13qh99q5f3umsaau4lfi1aqs4b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
