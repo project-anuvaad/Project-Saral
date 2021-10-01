@@ -1039,7 +1039,7 @@
             "id": "0hcouollM",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID1"
+                "EVS/SOCIALSCIENCEID1"
             ],
             "boundingBox": {
                 "height": 35.79660189353813,
@@ -1070,7 +1070,7 @@
             "id": "YG9j5TScJ",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID2"
+                "EVS/SOCIALSCIENCEID2"
             ],
             "boundingBox": {
                 "height": 37.42373708951271,
@@ -1101,7 +1101,7 @@
             "id": "NGK37iQlS",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID3"
+                "EVS/SOCIALSCIENCEID3"
             ],
             "boundingBox": {
                 "height": 36.33896649894068,
@@ -1132,7 +1132,7 @@
             "id": "zbv1pzqmk",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID4"
+                "EVS/SOCIALSCIENCEID4"
             ],
             "boundingBox": {
                 "height": 36.33896649894068,
@@ -1163,7 +1163,7 @@
             "id": "DsYoxUSWo",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID5"
+                "EVS/SOCIALSCIENCEID5"
             ],
             "boundingBox": {
                 "height": 36.33896649894068,
@@ -1194,7 +1194,7 @@
             "id": "rDKhdcwdy",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID6"
+                "EVS/SOCIALSCIENCEID6"
             ],
             "boundingBox": {
                 "height": 35.25423728813559,
@@ -1225,7 +1225,7 @@
             "id": "XfDL8clr1",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID7"
+                "EVS/SOCIALSCIENCEID7"
             ],
             "boundingBox": {
                 "height": 36.33896649894068,
@@ -1256,7 +1256,7 @@
             "id": "JhTRm9sKl",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID8"
+                "EVS/SOCIALSCIENCEID8"
             ],
             "boundingBox": {
                 "height": 35.25423728813559,
@@ -1287,7 +1287,7 @@
             "id": "mgg0Yhtvy",
             "type": "RECTANGLE",
             "tags": [
-                "EVSID9"
+                "EVS/SOCIALSCIENCEID9"
             ],
             "boundingBox": {
                 "height": 33.084778866525426,
@@ -1318,7 +1318,7 @@
             "id": "l0I0R9Eo9",
             "type": "RECTANGLE",
             "tags": [
-                "EVSIDTEN"
+                "EVS/SOCIALSCIENCEIDTEN"
             ],
             "boundingBox": {
                 "height": 34.169508077330505,
