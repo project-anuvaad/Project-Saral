@@ -18,7 +18,7 @@ import ButtonWithIcon from '../common/components/ButtonWithIcon';
 import ButtonComponent from '../common/components/ButtonComponent';
 import DropDownMenu from '../common/components/DropDownComponent';
 import TextField from '../common/components/TextField';
-import { getLoginCred, getScanData, getStudentsExamData, setScanData } from '../../utils/StorageUtils';
+import { getLoginCred, getScanData, getScannedDataFromLocal, getStudentsExamData, setScanData, setScannedDataIntoLocal } from '../../utils/StorageUtils';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { SaveScanData } from '../../flux/actions/apis/saveScanDataAction';
 import Spinner from '../common/components/loadingIndicator';
@@ -305,7 +305,7 @@ const ScannedDetailsComponent = ({
         }
     }
 
-    const saveMultiData = () => {
+    const saveMultiData = async () => {
 
         let stdMarkInfo = []
 
@@ -347,17 +347,45 @@ const ScannedDetailsComponent = ({
             "subject": filteredData.subject,
             "studentsMarkInfo": stdMarkInfo
         }
-        console.log("saveObjec", saveObj);
-        setIsLoading(true)
-        let apiObj = new SaveScanData(saveObj, loginData.data.token);
-        dispatch(APITransport(apiObj))
-        setIsLoading(false)
 
-        Alert.alert(Strings.message_text, Strings.saved_successfully, [{
-            text: Strings.ok_text, onPress: () => {
-                callScanStatusData()
+        saveAndFetchFromLocalStorag(saveObj)
+
+        // setIsLoading(true)
+        // let apiObj = new SaveScanData(saveObj, loginData.data.token);
+        // dispatch(APITransport(apiObj))
+        // setIsLoading(false)
+
+        // Alert.alert(Strings.message_text, Strings.saved_successfully, [{
+        //     text: Strings.ok_text, onPress: () => {
+        //         callScanStatusData()
+        //     }
+        // }])
+    }
+
+
+    const saveAndFetchFromLocalStorag = async (saveObj) => {
+        let getDataFromLocal = await getScannedDataFromLocal();
+        let len = 0
+        if (getDataFromLocal != null) {
+            console.log("getDataFromLocal", getDataFromLocal);
+            getDataFromLocal.forEach((element, index) => {
+                len = len + element.studentsMarkInfo.length
+            });
+            let totalLenOfStudentsMarkInfo = len + saveObj.studentsMarkInfo.length;
+            if (totalLenOfStudentsMarkInfo <= 10) {
+                if (getDataFromLocal) {
+                    let data = getDataFromLocal
+                    getDataFromLocal.push(saveObj)
+                    console.log("getDataFromLocal", getDataFromLocal);
+                    setScannedDataIntoLocal(getDataFromLocal)
+                }
+            } else {
+                Alert.alert("You can Save Only 10 Student.In Order to Continue have to save first")
             }
-        }])
+        } else {
+            console.log("saveObjects", saveObj);
+            setScannedDataIntoLocal([saveObj])
+        }
     }
 
 
@@ -416,7 +444,7 @@ const ScannedDetailsComponent = ({
                                 editable={edit}
                                 keyboardType={'numeric'}
                             />
-                             <Text style={styles.nameTextStyle}>{Strings.Exam} : {filteredData.subject} {filteredData.examDate} ({filteredData.examTestID})</Text>
+                            <Text style={styles.nameTextStyle}>{Strings.Exam} : {filteredData.subject} {filteredData.examDate} ({filteredData.examTestID})</Text>
                             {/* <Text style={styles.nameTextStyle}>{Strings.test_id + ': ' + filteredData.examTestID}</Text> */}
                             <Text style={styles.nameTextStyle}>{Strings.page_no + ': ' + (currentIndex + 1)}</Text>
                         </View>
