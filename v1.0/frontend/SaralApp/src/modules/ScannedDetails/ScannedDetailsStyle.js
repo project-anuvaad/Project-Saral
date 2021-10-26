@@ -105,6 +105,10 @@ export const styles = {
         color: AppTheme.GREY_TEXT,
         letterSpacing: 1
     },
+    row:{
+        flexDirection:'row',
+        alignItems:'center'
+    },
     submitBtnStyle: {
         width: '60%',
     },

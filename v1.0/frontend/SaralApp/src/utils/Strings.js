@@ -22,6 +22,7 @@ export default strings = new LocalizedStrings({
         no_text: 'No',
         version_text: 'Version',
         page_no:'Page Number',
+        skip:'Skip',
         give_permission_from_settings: 'Please give permission from Settings to use app',
         optional_update_available: 'A new update is available of App. Do you want to update now?',
         force_update_available: 'We have an updated version for you. Please Update to continue using App.',

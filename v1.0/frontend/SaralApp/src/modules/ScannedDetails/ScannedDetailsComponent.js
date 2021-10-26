@@ -22,6 +22,9 @@ import APITransport from '../../flux/actions/transport/apitransport';
 import { bindActionCreators } from 'redux';
 import { OcrLocalResponseAction } from '../../flux/actions/apis/OcrLocalResponseAction';
 
+//npm
+import CheckBox from '@react-native-community/checkbox';
+
 
 const ScannedDetailsComponent = ({
     navigation,
@@ -59,7 +62,7 @@ const ScannedDetailsComponent = ({
 
     const [nextBtn, setNextBtn] = useState('SUBMIT')
     const [checkStdRollDuplicate, setCheckStdRollDuplicate] = useState([])
-    const [isDuplicate, setIsDuplicate] = useState(false)
+    const [toggleCheckBox, setToggleCheckBox] = useState(false)
 
     const inputRef = React.createRef();
     const dispatch = useDispatch()
@@ -254,11 +257,14 @@ const ScannedDetailsComponent = ({
         else if (validCell) {
             showErrorMessage(Strings.please_correct_marks_data)
         }
-        else if (!studentValid) {
+        else if (!studentValid && !toggleCheckBox) {
             showErrorMessage(Strings.please_correct_student_id)
         }
         else {
             if (currentIndex + 1 <= stdRollArray.length - 1) {
+
+                let toggle = structureList[currentIndex + 1].hasOwnProperty("isNotAbleToSave") ? structureList[currentIndex + 1].isNotAbleToSave : false
+                setToggleCheckBox(toggle)
 
                 //for student validataion
 
@@ -269,7 +275,8 @@ const ScannedDetailsComponent = ({
 
                         structureList.forEach((el, index) => {
                             if (currentIndex == index) {
-                                el.RollNo = studentId
+                                el.RollNo = studentId,
+                                    el.isNotAbleToSave = toggle ? toggle : toggleCheckBox
                             }
                         });
 
@@ -286,6 +293,7 @@ const ScannedDetailsComponent = ({
                 if (currentIndex + 1 == stdRollArray.length - 1) {
                     setNextBtn(Strings.submit_text)
                 }
+                setToggleCheckBox(false)
             } else {
                 ocrLocalResponse.layout.cells.forEach(element => {
 
@@ -295,6 +303,7 @@ const ScannedDetailsComponent = ({
                         structureList.forEach((el, index) => {
                             if (currentIndex == index) {
                                 el.RollNo = studentId
+                                el.isNotAbleToSave = toggleCheckBox
                             }
                         });
 
@@ -315,7 +324,7 @@ const ScannedDetailsComponent = ({
     const saveMultiData = async () => {
 
         let storeTrainingData = ocrLocalResponse.layout.cells.filter((element) => {
-            if (element.format.name.slice(0,multipleStudent[0].length) == multipleStudent[0]) {
+            if (element.format.name.slice(0, multipleStudent[0].length) == multipleStudent[0]) {
                 return true
             }
         })
@@ -323,6 +332,7 @@ const ScannedDetailsComponent = ({
 
 
         structureList.forEach((el, index) => {
+            if (!el.isNotAbleToSave) {
             let stdTotalMarks = 0
             let stdData = {
                 "studentId": '',
@@ -334,17 +344,17 @@ const ScannedDetailsComponent = ({
             }
 
             stdData.studentId = el.RollNo
-           let putTrainingData = loginData.data.school.storeTrainingData ? stdData.studentIdTrainingData = storeTrainingData.length > 0 ? storeTrainingData[0].trainingDataSet : '':''
+           let putTrainingData = loginData.data.school.storeTrainingData ? stdData.studentIdTrainingData = storeTrainingData.length > 0 ? storeTrainingData[0].trainingDataSet : '' : ''
 
 
             let stdMarks_info = []
 
             el.data.forEach((value, i) => {
-                let marks_data = {
+            let marks_data = {
                     "questionId": '',
                     "obtainedMarks": ''
                 }
-                let putTrainingData = loginData.data.school.storeTrainingData &&  value.hasOwnProperty("trainingDataSet") ? marks_data.trainingData = value.trainingDataSet : ''
+                let putTrainingData = loginData.data.school.storeTrainingData && value.hasOwnProperty("trainingDataSet") ? marks_data.trainingData = value.trainingDataSet : ''
                 marks_data.questionId = value.format.name,
                     marks_data.obtainedMarks = value.consolidatedPrediction
                 stdTotalMarks = Number(stdTotalMarks) + Number(value.consolidatedPrediction)
@@ -354,6 +364,7 @@ const ScannedDetailsComponent = ({
             stdData.securedMarks = stdTotalMarks
             stdData.marksInfo = stdMarks_info
             stdMarkInfo.push(stdData)
+           }
 
         })
 
@@ -391,7 +402,7 @@ const ScannedDetailsComponent = ({
 
                 let totalLenOfStudentsMarkInfo = len + saveObj.studentsMarkInfo.length;
 
-                if (totalLenOfStudentsMarkInfo <= 20) {
+                if (totalLenOfStudentsMarkInfo <= 50) {
                     if (filterData) {
 
                         getDataFromLocal.forEach((e, index) => {
@@ -404,7 +415,7 @@ const ScannedDetailsComponent = ({
 
                                 e.studentsMarkInfo.forEach((element, i) => {
 
-                                    let findStudent = e.studentsMarkInfo.filter(o => {
+                                    let findStudent = !isMultipleStudent && e.studentsMarkInfo.filter(o => {
                                         if (o.studentId == studentId) {
                                             return true;
                                         }
@@ -424,8 +435,9 @@ const ScannedDetailsComponent = ({
 
 
                                         if (findMultipleStudent.length > 0) {
-                                            getDataFromLocal[index].studentsMarkInfo[i] = saveObj.studentsMarkInfo[i]
-                                        } else {
+                                            getDataFromLocal[index].studentsMarkInfo[i] = saveObj.studentsMarkInfo.length > 0 ? saveObj.studentsMarkInfo[i] : []
+
+                                        } else if (saveObj.studentsMarkInfo.length > 0) {
                                             getDataFromLocal[index].studentsMarkInfo.push(saveObj.studentsMarkInfo[i])
                                         }
                                     }
@@ -444,13 +456,13 @@ const ScannedDetailsComponent = ({
                     Alert.alert("You can Save Only 10 Student. In Order to Continue have to save first")
                 }
 
-            } else if (saveObj.studentsMarkInfo.length <= 10) {
+            } else if (saveObj.studentsMarkInfo.length <= 50) {
                 let data = getDataFromLocal.push(saveObj)
                 setScannedDataIntoLocal(getDataFromLocal)
                 goToMyScanScreen()
             }
 
-        } else if (saveObj.studentsMarkInfo.length <= 10) {
+        } else if (saveObj.studentsMarkInfo.length <= 50) {
             setScannedDataIntoLocal([saveObj])
             goToMyScanScreen()
         } else {
@@ -458,15 +470,17 @@ const ScannedDetailsComponent = ({
         }
     }
 
-
     const goBackFrame = () => {
         if (currentIndex - 1 >= 0) {
             let std = structureList[currentIndex - 1].RollNo
+            let toggle = structureList[currentIndex - 1].isNotAbleToSave
             const index = checkStdRollDuplicate.indexOf(std);
             if (index > -1) {
                 checkStdRollDuplicate.splice(index, 1);
             }
             setCheckStdRollDuplicate(checkStdRollDuplicate)
+
+            setToggleCheckBox(toggle)
 
             setNewArrayValue(structureList[currentIndex - 1].data)
             setStudentID(structureList[currentIndex - 1].RollNo)
@@ -518,6 +532,21 @@ const ScannedDetailsComponent = ({
                                 <Text style={styles.nameTextStyle}>{Strings.Exam} : {filteredData.subject} {filteredData.examDate} ({filteredData.examTestID})</Text>
 
                                 <Text style={styles.nameTextStyle}>{Strings.page_no + ': ' + (currentIndex + 1)}</Text>
+                                <View style={styles.row}>
+                                    <Text style={styles.nameTextStyle}>{Strings.skip}</Text>
+                                    <CheckBox
+                                        disabled={false}
+                                        value={toggleCheckBox}
+                                        onValueChange={(newValue) => {
+                                            if (newValue) {
+                                                setStdErr('')
+                                            } else {
+                                                validateStudentId(studentId)
+                                            }
+                                            setToggleCheckBox(newValue)
+                                        }}
+                                    />
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -704,13 +733,13 @@ const ScannedDetailsComponent = ({
         if (disable) {
             showErrorMessage(Strings.please_correct_marks_data)
         }
-        else if (!studentValid) {
+        else if (!studentValid && !toggleCheckBox) {
             showErrorMessage(Strings.please_correct_student_id)
         }
         else {
             if (sumOfObtainedMarks > 0) {
                 //with MAX & OBTAINED MARKS
-                console.log("sumOfObtainedMarks",sumOfObtainedMarks);
+                console.log("sumOfObtainedMarks", sumOfObtainedMarks);
                 if (sumOfObtainedMarks != totalMarkSecured) {
                     setObtnMarkErr(true)
                     showErrorMessage("Sum Of All obtained marks should be equal to marksObtained")
@@ -779,6 +808,9 @@ const ScannedDetailsComponent = ({
             ]
         }
         let putTrainingData = loginData.data.school.storeTrainingData ? saveObj.studentsMarkInfo[0].studentIdTrainingData = storeTrainingData.length > 0 && storeTrainingData[0].trainingDataSet : ''
+        if (toggleCheckBox) {
+            saveObj.studentsMarkInfo = []
+        }
         saveAndFetchFromLocalStorag(saveObj)
     }
 
