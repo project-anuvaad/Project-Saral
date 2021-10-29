@@ -31,6 +31,7 @@ class LoginComponent extends Component {
     }
 
     componentDidMount() {
+        setTimeout(() => { this.setState({ isLoading: false}) }, 1000)
         this.callDefaultbrandingData()
         this.props.navigation.addListener('willFocus', async payload => {
             AppState.addEventListener('change', this.handleAppStateChange);
@@ -203,6 +204,7 @@ class LoginComponent extends Component {
 
     render() {
         const { password, isLoading, errUsername, errPassword, errCommon } = this.state;
+        const { defaultBrandingdata } = this.props
         return (
             <View style={styles.container}>
                 <ScrollView
@@ -212,14 +214,22 @@ class LoginComponent extends Component {
                     keyboardShouldPersistTaps={'handled'}
                 >
 
-                    {this.props.defaultBrandingdata ?
-                      <View style={styles.container1}>
-                        <Image style={{ width: 100, height: 100 }} source={{ uri: 'data:image/png;base64,' + this.props.defaultBrandingdata.logoImage }} />
-                    </View>    
-                        : 
-                        <View style={styles.container1}>
-                        <Image style={{ width: 100, height: 100 }} source={Assets.AppLogo} />
-                    </View> 
+                    {
+
+                        this.state.isLoading ?
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 12, fontWeight: 'bold', fontFamily: 'sans-serif-condensed' }}>Loading Branding ...</Text>
+                            </View> :
+
+                            defaultBrandingdata ?
+                                <View style={styles.container1}>
+                                    <Image style={{ width: 100, height: 100 }} source={{ uri: 'data:image/png;base64,' + this.props.defaultBrandingdata.logoImage }} />
+                                </View>
+                                :
+
+                                <View style={styles.container1}>
+                                    <Image style={{ width: 100, height: 100 }} source={Assets.AppLogo} />
+                                </View>
                     }
 
                     <View style={styles.container2}>
